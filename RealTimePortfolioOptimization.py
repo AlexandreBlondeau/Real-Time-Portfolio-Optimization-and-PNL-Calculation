@@ -4,6 +4,7 @@ import pandas as pd
 from scipy.optimize import minimize
 from scipy.stats import norm
 from joblib import Parallel, delayed
+from alpha_vantage.timeseries import TimeSeries  # Importing Alpha Vantage API library
 
 class RealTimePNL:
     @staticmethod
@@ -14,11 +15,12 @@ class RealTimePNL:
             portfolio[row['Asset']] = (row['Position'], row['Price'])
         return portfolio
 
-    def __init__(self, initial_portfolio, liquidity_constraints=None):
-        self.portfolio = initial_portfolio  # Dictionary of asset: (position, price)
-        self.liquidity_constraints = liquidity_constraints  # Liquidity constraints per asset
-        self.pnl_history = []  # Historical PNL values
-        logging.basicConfig(level=logging.INFO)  # Initialize logging
+    def __init__(self, initial_portfolio, liquidity_constraints=None, api_key=None):
+        self.portfolio = initial_portfolio
+        self.liquidity_constraints = liquidity_constraints
+        self.pnl_history = []
+        self.api_key = api_key  # API Key for Alpha Vantage
+        logging.basicConfig(level=logging.INFO)
 
     def calculate_PNL(self):
         pnl = sum(position * price for position, price in self.portfolio.values())
@@ -26,6 +28,13 @@ class RealTimePNL:
         logging.info(f"Updated PNL: {pnl}")
         return pnl
 
+    def update_real_time_data(self, asset):
+        ts = TimeSeries(key=self.api_key, output_format='pandas')
+        data, meta_data = ts.get_quote_endpoint(symbol=asset)
+        real_time_price = float(data['05. price'].iloc[0])
+        if asset in self.portfolio:
+            position, _ = self.portfolio[asset]
+            self.portfolio[asset] = (position, real_time_price)
     # Estimate Sharpe ratio for given portfolio weights
     def estimate_sharpe_ratio(self, weights, positions, prices):
         portfolio_return = np.dot(weights, positions * prices)

@@ -1,18 +1,25 @@
 import numpy as np
 import logging
+import pandas as pd
 from scipy.optimize import minimize
 from scipy.stats import norm
 from joblib import Parallel, delayed
 
-# Define the base class for Real-Time PNL Calculation
 class RealTimePNL:
+    @staticmethod
+    def load_data_from_csv(filepath):
+        df = pd.read_csv(filepath)
+        portfolio = {}
+        for index, row in df.iterrows():
+            portfolio[row['Asset']] = (row['Position'], row['Price'])
+        return portfolio
+
     def __init__(self, initial_portfolio, liquidity_constraints=None):
         self.portfolio = initial_portfolio  # Dictionary of asset: (position, price)
         self.liquidity_constraints = liquidity_constraints  # Liquidity constraints per asset
         self.pnl_history = []  # Historical PNL values
         logging.basicConfig(level=logging.INFO)  # Initialize logging
 
-    # Calculate and update the PNL based on current portfolio
     def calculate_PNL(self):
         pnl = sum(position * price for position, price in self.portfolio.values())
         self.pnl_history.append(pnl)

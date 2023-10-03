@@ -144,5 +144,3 @@ if __name__ == "__main__":
     initial_portfolio = RealTimePNL.load_data_from_csv("your_file.csv")  # Replace with your actual CSV file path
     pnl_calculator = RealTimePNL(initial_portfolio, api_key="YOUR_ALPHA_VANTAGE_API_KEY")  # Replace with your actual API key
     pnl_calculator.update_real_time_data('AAPL')  # Update real-time data for the 'AAPL' asset
-
-    # Additional code for further tests, optimizations, etc. can be added here.

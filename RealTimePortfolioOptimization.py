@@ -110,7 +110,6 @@ class AdvancedRealTimePNL(RealTimePNL):
                     np.std(self.pnl_history) + transaction_costs)
         
         # Constraints and optimization remain the same as in the base class
-        # ...
 
 # Parallel and GPU-Accelerated class derived from AdvancedRealTimePNL
 class ParallelGPURealTimePNL(AdvancedRealTimePNL):

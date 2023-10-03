@@ -139,4 +139,10 @@ class ParallelGPURealTimePNL(AdvancedRealTimePNL):
             simulated_pnl += position * simulated_price
         return simulated_pnl - self.transaction_cost * sum(abs(position) for position, _ in self.portfolio.items())
 
-# The code for data loading and execution would come here.
+# The code for data loading and execution starts here.
+if __name__ == "__main__":
+    initial_portfolio = RealTimePNL.load_data_from_csv("your_file.csv")  # Replace with your actual CSV file path
+    pnl_calculator = RealTimePNL(initial_portfolio, api_key="YOUR_ALPHA_VANTAGE_API_KEY")  # Replace with your actual API key
+    pnl_calculator.update_real_time_data('AAPL')  # Update real-time data for the 'AAPL' asset
+
+    # Additional code for further tests, optimizations, etc. can be added here.

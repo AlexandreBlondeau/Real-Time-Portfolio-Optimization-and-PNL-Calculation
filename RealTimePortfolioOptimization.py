@@ -1,10 +1,11 @@
 import numpy as np
 import logging
 import pandas as pd
+import datetime
 from scipy.optimize import minimize
 from scipy.stats import norm
 from joblib import Parallel, delayed
-from alpha_vantage.timeseries import TimeSeries  # Importing Alpha Vantage API library
+from alpha_vantage.timeseries import TimeSeries
 
 
 class RealTimePNL:
@@ -102,9 +103,8 @@ class RealTimePNL:
 # Define the derived class for Advanced PNL calculation
 class AdvancedRealTimePNL(RealTimePNL):
     def __init__(self, initial_portfolio, liquidity_constraints=None, transaction_cost=0.001, api_key=None):
-        super().__init__(initial_portfolio, liquidity_constraints)
+        super().__init__(initial_portfolio, liquidity_constraints, api_key)
         self.transaction_cost = transaction_cost  # Transaction cost rate
-        self.api_key = api_key  # API Key for Alpha Vantage
         self.returns = None  # To store the returns matrix
 
     def fetch_price_data(self, asset):
